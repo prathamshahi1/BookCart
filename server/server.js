@@ -99,10 +99,9 @@ app.use('/api/admin', adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5001;
-
-// Only listen if not running in a serverless environment
-if (process.env.VERCEL !== '1' && !process.env.SERVERLESS) {
+// Only listen if executed directly from terminal (not imported in serverless)
+const isDirectRun = process.argv[1] && (process.argv[1].endsWith('server.js') || process.argv[1].endsWith('server'));
+if (isDirectRun && !process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME && !process.env.LAMBDA_TASK_ROOT) {
   app.listen(PORT, () => {
     console.log(`🚀 BookCart Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   });
