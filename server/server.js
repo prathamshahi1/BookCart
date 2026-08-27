@@ -57,7 +57,6 @@ if (process.env.NODE_ENV === 'development') {
 
 // Ensure database is connected before handling any API route
 app.use(async (req, res, next) => {
-  // Allow health check without blocking if needed, but connect for all
   try {
     await connectDB();
     next();
@@ -73,7 +72,7 @@ app.use(async (req, res, next) => {
 // Static folder for uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check route
+// Health check route (both /api/health and /health)
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
@@ -81,17 +80,41 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'online',
+    message: 'BookCart API Server is healthy and running',
+    timestamp: new Date().toISOString()
+  });
+});
 
-// API Routes
+// API Routes (Dual mounted to handle both /api/* and rewritten /* paths)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/books', bookRoutes);
+app.use('/books', bookRoutes);
+
 app.use('/api/categories', categoryRoutes);
+app.use('/categories', categoryRoutes);
+
 app.use('/api/cart', cartRoutes);
+app.use('/cart', cartRoutes);
+
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/wishlist', wishlistRoutes);
+
 app.use('/api/orders', orderRoutes);
+app.use('/orders', orderRoutes);
+
 app.use('/api/payment', paymentRoutes);
+app.use('/payment', paymentRoutes);
+
 app.use('/api/reviews', reviewRoutes);
+app.use('/reviews', reviewRoutes);
+
 app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 
 // Error Handling Middleware
 app.use(notFound);
