@@ -1,25 +1,34 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
-// Ensure uploads directory exists
-const uploadDir = 'uploads/';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Use /tmp in serverless or ./uploads locally
+const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT;
+const uploadDir = isServerless ? path.join(os.tmpdir(), 'uploads') : 'uploads/';
+
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (e) {
+  // Silent fail in strictly read-only environments
 }
 
-// Storage configuration
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname).toLowerCase()}`
-    );
-  }
-});
+// Storage configuration: memory storage for serverless, disk for local development
+const storage = isServerless
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination(req, file, cb) {
+        cb(null, uploadDir);
+      },
+      filename(req, file, cb) {
+        cb(
+          null,
+          `${file.fieldname}-${Date.now()}${path.extname(file.originalname).toLowerCase()}`
+        );
+      }
+    });
 
 // File filter validation
 const checkFileType = (file, cb) => {
