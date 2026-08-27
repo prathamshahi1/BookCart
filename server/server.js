@@ -96,8 +96,13 @@ app.use('/api/admin', adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
-  console.log(`🚀 BookCart Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+// Only listen if not running in a serverless environment
+if (process.env.VERCEL !== '1' && !process.env.SERVERLESS) {
+  app.listen(PORT, () => {
+    console.log(`🚀 BookCart Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}
+
+export default app;
