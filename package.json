@@ -9,7 +9,8 @@
     "server": "npm run dev --prefix server",
     "client": "npm run dev --prefix client",
     "seed": "npm run seed --prefix server",
-    "build": "npm run build --prefix client"
+    "build": "npm run build --prefix client",
+    "vercel-build": "npm install --prefix client && npm install --prefix server && npm run build --prefix client"
   },
   "keywords": [
     "mern",
@@ -21,6 +22,6 @@
     "redux-toolkit",
     "bookstore"
   ],
-  "author": "",
-  "license": "ISC"
+  "author": "Pratham Shahi",
+  "license": "MIT"
 }
