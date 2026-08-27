@@ -10,13 +10,15 @@
     "server": "npm run dev --prefix server",
     "client": "npm run dev --prefix client",
     "seed": "npm run seed --prefix server",
-    "build": "npm install && cd client && npm install --include=dev && npm run build",
-    "vercel-build": "npm install && cd client && npm install --include=dev && npm run build"
+    "build-api": "npx esbuild server/app.js --bundle --platform=node --format=esm --target=node18 --outfile=api/index.js --external:bcryptjs --external:mongoose --external:express --external:jsonwebtoken --external:dotenv --external:cors --external:helmet --external:morgan --external:multer --external:razorpay --external:express-rate-limit",
+    "build": "npm install && npm run build-api && cd client && npm install --include=dev && npm run build",
+    "vercel-build": "npm install && npm run build-api && cd client && npm install --include=dev && npm run build"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "esbuild": "^0.23.1",
     "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",
     "helmet": "^7.1.0",
