@@ -32,6 +32,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy for Vercel & cloud reverse proxies
+app.set('trust proxy', 1);
+
 // Security HTTP Headers
 app.use(
   helmet({
