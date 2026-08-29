@@ -28,3 +28,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Private Practice & Resume Docs
+RESUME_AND_INTERVIEW_PREP.md
+*RESUME*.md
+*INTERVIEW*.md
